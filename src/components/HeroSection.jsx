@@ -250,7 +250,7 @@ export default function HeroSection({ sectionRef }) {
         <div className="hero-video-fallback" />
         <video
           ref={videoRef}
-          src="/videos/hero-master.mp4"
+          src={`${import.meta.env.BASE_URL}videos/hero-master.mp4`}
           playsInline
           muted
           preload="auto"

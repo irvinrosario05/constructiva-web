@@ -53,7 +53,7 @@ export default function NavBar({ topOffset }) {
             <a href="#" className="logo" aria-label="Constructiva — inicio">
               {!logoBroken ? (
                 <img
-                  src="/logos/Logo_aqua.png"
+                  src={`${import.meta.env.BASE_URL}logos/Logo_aqua.png`}
                   alt="Constructiva"
                   className="logo-img"
                   onError={() => setLogoBroken(true)}

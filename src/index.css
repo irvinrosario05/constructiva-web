@@ -1,9 +1,9 @@
 /* ── Fonts ── */
-@font-face { font-family:"SF Pro Display"; src:url("/fonts/SFProDisplay-Regular.otf") format("opentype"); font-weight:400; font-style:normal; font-display:swap; }
-@font-face { font-family:"SF Pro Display"; src:url("/fonts/SFProDisplay-Medium.otf") format("opentype"); font-weight:500; font-style:normal; font-display:swap; }
-@font-face { font-family:"SF Pro Display"; src:url("/fonts/SFProDisplay-Bold.otf") format("opentype"); font-weight:700; font-style:normal; font-display:swap; }
-@font-face { font-family:"SF Pro Display"; src:url("/fonts/SFProDisplay-SemiboldItalic.otf") format("opentype"); font-weight:600; font-style:italic; font-display:swap; }
-@font-face { font-family:"SF Pro Display"; src:url("/fonts/SFProDisplay-HeavyItalic.otf") format("opentype"); font-weight:700; font-style:italic; font-display:swap; }
+@font-face { font-family:"SF Pro Display"; src:url("../public/fonts/SFProDisplay-Regular.otf") format("opentype"); font-weight:400; font-style:normal; font-display:swap; }
+@font-face { font-family:"SF Pro Display"; src:url("../public/fonts/SFProDisplay-Medium.otf") format("opentype"); font-weight:500; font-style:normal; font-display:swap; }
+@font-face { font-family:"SF Pro Display"; src:url("../public/fonts/SFProDisplay-Bold.otf") format("opentype"); font-weight:700; font-style:normal; font-display:swap; }
+@font-face { font-family:"SF Pro Display"; src:url("../public/fonts/SFProDisplay-SemiboldItalic.otf") format("opentype"); font-weight:600; font-style:italic; font-display:swap; }
+@font-face { font-family:"SF Pro Display"; src:url("../public/fonts/SFProDisplay-HeavyItalic.otf") format("opentype"); font-weight:700; font-style:italic; font-display:swap; }
 
 :root {
   --aqua: #36DBCA;
