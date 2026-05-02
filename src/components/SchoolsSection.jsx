@@ -47,147 +47,112 @@ const SCHOOLS_DATA = [
   },
 ]
 
-function useInView(threshold = 0.3) {
-  const ref = useRef(null)
-  const [inView, setInView] = useState(false)
-  useEffect(() => {
-    if (!ref.current) return
-    const obs = new IntersectionObserver(
-      (entries) => { entries.forEach((e) => { if (e.isIntersecting) { setInView(true); obs.disconnect() } }) },
-      { threshold }
-    )
-    obs.observe(ref.current)
-    return () => obs.disconnect()
-  }, [threshold])
-  return [ref, inView]
-}
-
-function SchoolsHeader() {
-  const [ref, inView] = useInView(0.3)
-  const headlineWords = 'Descubre las escuelas dentro de Constructiva'.split(' ')
-  return (
-    <div ref={ref} className="schools-header">
-      <div className={`schools-eyebrow ${inView ? 'is-in' : ''}`}>Learn. Apply. Lead.</div>
-      <h2 className="schools-headline">
-        {headlineWords.map((w, i) => (
-          <span
-            key={`${w}-${i}`}
-            className={`schools-headword ${inView ? 'is-in' : ''}`}
-            style={{ transitionDelay: `${120 + i * 60}ms` }}
-          >
-            {w}{i < headlineWords.length - 1 ? ' ' : ''}
-          </span>
-        ))}
-      </h2>
-    </div>
-  )
-}
-
-function SchoolCard({ school, hoveredId, setHoveredId, isLast }) {
-  const isHovered = hoveredId === school.id
-  const anyHovered = hoveredId !== null
-  const isDimmed = anyHovered && !isHovered
-
-  return (
-    <div
-      className={`school-card ${isHovered ? 'is-hovered' : ''} ${isDimmed ? 'is-dimmed' : ''}`}
-      onMouseEnter={() => setHoveredId(school.id)}
-      onMouseLeave={() => setHoveredId(null)}
-    >
-      <div className="school-card-bg" style={{ backgroundImage: school.gradient }} />
-      <div className="school-card-overlay" />
-      <div className="school-card-title-default">{school.title}</div>
-      <div className="school-card-expanded">
-        <h3 className="school-card-title-expanded">{school.title}</h3>
-        <p className="school-card-desc">{school.description}</p>
-        <div className="school-card-courses-label">Cursos disponibles</div>
-        <ul className="school-card-courses">
-          {school.courses.map((c, i) => (
-            <li key={i} className="school-card-course">
-              <span className="school-card-course-name">{c.name}</span>
-              <span className="school-card-course-duration">{c.duration}</span>
-            </li>
-          ))}
-        </ul>
-        <button className="school-card-cta">Empieza ahora</button>
-      </div>
-      {!isLast && <div className="school-card-divider" />}
-    </div>
-  )
-}
-
 export default function SchoolsSection() {
   const sectionRef = useRef(null)
-  const [scrollActiveId, setScrollActiveId] = useState(null)
-  const [hoverActiveId, setHoverActiveId] = useState(null)
-  const [entering, setEntering] = useState(false)
+  const phaseRef = useRef(0)
+  const [phase, setPhase] = useState(0)
+  const [hoveredId, setHoveredId] = useState(null)
 
-  // Scroll-driven: auto-advance active card as user scrolls through section
+  // 0 = not visible, 1 = title, 2 = cards entering, 3 = hover active
   useEffect(() => {
     const section = sectionRef.current
     if (!section) return
-
     let raf = 0, stopped = false
 
     const tick = () => {
       if (stopped) return
       const rect = section.getBoundingClientRect()
       const vh = window.innerHeight
-      const sectionH = section.offsetHeight
-      const total = sectionH - vh
+      const total = section.offsetHeight - vh
 
-      if (rect.top > vh || rect.bottom < 0) {
-        setScrollActiveId(null)
-        raf = requestAnimationFrame(tick)
-        return
+      let p = 0
+      if (rect.top <= 0 && rect.bottom >= vh) {
+        p = total > 0 ? Math.max(0, Math.min(1, -rect.top / total)) : 0
+      } else if (rect.bottom < vh) {
+        p = 1
       }
 
-      const scrolled = -rect.top
-      const p = total > 0 ? Math.max(0, Math.min(1, scrolled / total)) : 0
-      // Map 0→1 to card index (4 cards = 0-0.25, 0.25-0.5, 0.5-0.75, 0.75-1)
-      const idx = Math.min(Math.floor(p * SCHOOLS_DATA.length), SCHOOLS_DATA.length - 1)
-      setScrollActiveId(SCHOOLS_DATA[idx].id)
+      let next
+      if (rect.top > vh * 0.95) next = 0
+      else if (p < 0.4) next = 1
+      else if (p < 0.6) next = 2
+      else next = 3
+
+      if (next !== phaseRef.current) {
+        phaseRef.current = next
+        setPhase(next)
+      }
       raf = requestAnimationFrame(tick)
     }
 
     raf = requestAnimationFrame(tick)
-    return () => { stopped = true; if (raf) cancelAnimationFrame(raf) }
+    return () => { stopped = true; cancelAnimationFrame(raf) }
   }, [])
 
-  // Cinematic entrance when section first appears
-  useEffect(() => {
-    const obs = new IntersectionObserver(
-      (entries) => {
-        if (entries[0].isIntersecting) { setEntering(true); obs.disconnect() }
-      },
-      { threshold: 0.05 }
-    )
-    if (sectionRef.current) obs.observe(sectionRef.current)
-    return () => obs.disconnect()
-  }, [])
+  const cardsVisible = phase >= 2
+  const hoverActive = phase >= 2
 
-  // Hover overrides scroll-driven focus
-  const activeId = hoverActiveId ?? scrollActiveId
+  const titleStyle = {
+    opacity: phase === 1 ? 1 : 0,
+    transform:
+      phase === 0
+        ? 'translateY(calc(-50% + 30px))'
+        : phase >= 2
+          ? 'translateY(calc(-50% - 40px))'
+          : 'translateY(-50%)',
+    transition:
+      phase === 1
+        ? 'opacity 700ms var(--ease-cinema), transform 700ms var(--ease-cinema)'
+        : 'opacity 450ms ease, transform 500ms ease',
+  }
 
   return (
-    <section
-      ref={sectionRef}
-      className={`schools-section${entering ? ' section-entering' : ''}`}
-    >
-      <SchoolsHeader />
-      <div
-        className="schools-cards"
-        onMouseLeave={() => setHoverActiveId(null)}
-      >
-        {SCHOOLS_DATA.map((school, i) => (
-          <SchoolCard
-            key={school.id}
-            school={school}
-            hoveredId={activeId}
-            setHoveredId={setHoverActiveId}
-            isLast={i === SCHOOLS_DATA.length - 1}
-          />
-        ))}
+    <section ref={sectionRef} className="schools-section">
+      <div className="schools-sticky">
+        <div className="schools-title-wrap" style={titleStyle}>
+          <h2 className="schools-title">Descubre las Escuelas dentro de Constructiva</h2>
+        </div>
+
+        <div
+          className="schools-cards"
+          onMouseLeave={() => setHoveredId(null)}
+          style={{ pointerEvents: hoverActive ? 'auto' : 'none' }}
+        >
+          {SCHOOLS_DATA.map((school, i) => {
+            const isHovered = hoveredId === school.id
+            const isDimmed = hoveredId !== null && !isHovered
+            return (
+              <div
+                key={school.id}
+                className={`school-card${cardsVisible ? ' cards-visible' : ''}${isHovered ? ' is-hovered' : ''}${isDimmed ? ' is-dimmed' : ''}`}
+                style={{ transitionDelay: phase === 2 ? `${i * 80}ms` : '0ms' }}
+                onMouseEnter={() => hoverActive && setHoveredId(school.id)}
+              >
+                <div className="school-card-bg" style={{ background: school.gradient }} />
+                <div className="school-card-overlay" />
+                <div className="school-card-title-default">{school.title}</div>
+                <div className="school-card-expanded">
+                  <h3 className="school-card-title-expanded">{school.title}</h3>
+                  <div className="school-card-deco-line" />
+                  <p className="school-card-desc">{school.description}</p>
+                  <div className="school-card-courses-label">Cursos</div>
+                  <ul className="school-card-courses">
+                    {school.courses.map((c, ci) => (
+                      <li key={ci} className="school-card-course">
+                        <span className="school-card-course-name">{c.name}</span>
+                        <span className="school-card-course-duration">{c.duration}</span>
+                      </li>
+                    ))}
+                  </ul>
+                  <a href="#" className="school-card-cta-link">
+                    Empieza ahora <span className="school-card-cta-arrow">→</span>
+                  </a>
+                </div>
+                {i < SCHOOLS_DATA.length - 1 && <div className="school-card-divider" />}
+              </div>
+            )
+          })}
+        </div>
       </div>
     </section>
   )
