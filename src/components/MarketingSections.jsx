@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef, useMemo } from 'react'
+import MethodologySection from './MethodologySection'
 
 /* ── Intersection-based in-view (fires once) ── */
 function useInView(threshold = 0.2, once = true) {
@@ -123,103 +124,6 @@ function CountUp({ target, start, duration = 400 }) {
     return () => cancelAnimationFrame(raf)
   }, [start, target, duration])
   return <span>{String(v).padStart(2, '0')}</span>
-}
-
-/* ════════════════════════════════════════════
-   SECTION 3 — METODOLOGÍA
-   Scroll-driven: pillars reveal one by one as you scroll through the section
-   ════════════════════════════════════════════ */
-const PILLARS = [
-  { n: 1, t: 'Aprende haciendo', d: 'Cada curso en vivo o grabado se aplica a la realidad de nuestros estudiantes.' },
-  { n: 2, t: 'Estudio del caso', d: 'Casos reales con experiencias y aprendizajes de proyectos reales.' },
-  { n: 3, t: 'Proyecto transversal', d: 'Las tareas quedaron en el pasado. Evaluamos tu desempeño con proyectos prácticos.' },
-  { n: 4, t: 'Escenarios dinámicos', d: 'Nuestros estudiantes toman decisiones en situaciones interactivas.' },
-  { n: 5, t: 'Comunidad e interacción', d: 'Expertos guiándote y estudiantes compartiendo conocimiento es la base de nuestra metodología.' },
-  { n: 6, t: 'Recursos descargables', d: 'Accede a recursos únicos en cada curso que tomas.' },
-  { n: 7, t: 'Feedback continuo', d: 'Te escuchamos y nos mantenemos en mejora continua para crecer contigo.' },
-]
-
-function Pillar({ data, index, inView }) {
-  return (
-    <div className={`pillar-v2 ${inView ? 'is-in' : ''}`} style={{ transitionDelay: `${index * 80}ms` }}>
-      <div className="pillar-v2-rule" />
-      <div className="pillar-v2-content">
-        <div className="pillar-v2-num"><CountUp target={data.n} start={inView} duration={500} /></div>
-        <div className="pillar-v2-title">{data.t}</div>
-        <div className="pillar-v2-desc">{data.d}</div>
-      </div>
-    </div>
-  )
-}
-
-function MethodologySection() {
-  const sectionRef = useRef(null)
-  const [sectionEnterRef, entered] = useSectionEnter()
-  const scrollProgress = useScrollProgress(sectionRef)
-  const [headRef, headIn] = useInView(0.2)
-  const parallaxRef = useParallaxY(0.28, 120)
-
-  const setHeadAndParallax = (node) => {
-    headRef.current = node
-    parallaxRef.current = node
-  }
-
-  // Attach both sectionRef and sectionEnterRef to the section
-  const setSectionRefs = (node) => {
-    sectionRef.current = node
-    sectionEnterRef.current = node
-  }
-
-  // Pillar i becomes visible when progress >= i / (PILLARS.length + 2)
-  const pillarVisible = (i) => {
-    const threshold = (i + 1) / (PILLARS.length + 2)
-    return scrollProgress >= threshold || headIn
-  }
-
-  return (
-    <section
-      ref={setSectionRefs}
-      className={`m-section v2-method${entered ? ' section-entering' : ''}`}
-    >
-      <div className="m-container">
-        <div ref={setHeadAndParallax} className={`v2-method-header v2-parallax ${headIn ? 'is-in' : ''}`}>
-          <div className="v2-method-h1"><span className="v2-clip-reveal v2-method-h1-light">Metodología</span></div>
-          <div className="v2-method-h2">
-            <span className="v2-clip-reveal v2-method-h1-bold" style={{ transitionDelay: '300ms' }}>Constructiva</span>
-          </div>
-          <div className="v2-method-sub">Construye tu futuro, <em>hoy</em></div>
-          <p className="v2-method-para">
-            <WordFade
-              text="Creemos en los profesionales, aquellos con el potencial para transformar la industria."
-              start={headIn}
-              baseDelay={900}
-              perWord={35}
-            />
-          </p>
-        </div>
-
-        <div className="pillars-v2-grid">
-          <div className="pillars-row pillars-row-a">
-            <Pillar data={PILLARS[0]} index={0} inView={pillarVisible(0)} />
-            <Pillar data={PILLARS[1]} index={1} inView={pillarVisible(1)} />
-          </div>
-          <div className="pillars-row pillars-row-b">
-            <Pillar data={PILLARS[2]} index={2} inView={pillarVisible(2)} />
-          </div>
-          <div className="pillars-row pillars-row-c">
-            <Pillar data={PILLARS[3]} index={3} inView={pillarVisible(3)} />
-            <Pillar data={PILLARS[4]} index={4} inView={pillarVisible(4)} />
-          </div>
-          <div className="pillars-row pillars-row-d">
-            <Pillar data={PILLARS[5]} index={5} inView={pillarVisible(5)} />
-            <Pillar data={PILLARS[6]} index={6} inView={pillarVisible(6)} />
-          </div>
-        </div>
-
-        <div className="m-cta-row"><button className="m-cta-primary">Empieza gratis</button></div>
-      </div>
-    </section>
-  )
 }
 
 /* ════════════════════════════════════════════
