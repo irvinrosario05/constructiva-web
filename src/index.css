@@ -325,15 +325,23 @@ body { overflow-x: hidden; }
   justify-content: center;
 }
 /* Scrubbed background video */
-.schools-video {
+.schools-parallax-wrap {
   position: absolute;
   inset: 0;
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  object-position: center;
   z-index: 0;
-  opacity: 0.55;
+  overflow: hidden;
+}
+.schools-parallax-img {
+  position: absolute;
+  left: 0;
+  top: -20%;
+  width: 100%;
+  height: 140%;
+  object-fit: cover;
+  object-position: center top;
+  will-change: transform;
+  user-select: none;
+  pointer-events: none;
 }
 .schools-video-overlay {
   position: absolute;

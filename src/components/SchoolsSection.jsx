@@ -63,9 +63,9 @@ const SCHOOLS_DATA = [
 
 export default function SchoolsSection() {
   const sectionRef  = useRef(null)
-  const videoRef    = useRef(null)
+  const bgRef       = useRef(null)
   const phaseRef    = useRef(0)
-  const [phase, setPhase]       = useState(0)
+  const [phase, setPhase]         = useState(0)
   const [hoveredId, setHoveredId] = useState(null)
 
   // 0 = not visible, 1 = title, 2 = cards entering, 3 = hover active
@@ -87,16 +87,9 @@ export default function SchoolsSection() {
         p = 1
       }
 
-      // Scrub background video
-      const video = videoRef.current
-      if (video && video.readyState >= 1) {
-        const dur = video.duration && !isNaN(video.duration) ? video.duration : 0
-        if (dur > 0) {
-          const target = Math.max(0, Math.min(dur, p * dur))
-          if (Math.abs(video.currentTime - target) > 0.08) {
-            try { video.currentTime = target } catch (_) {}
-          }
-        }
+      // Parallax: image travels -15% → +15% as p goes 0 → 1
+      if (bgRef.current) {
+        bgRef.current.style.transform = `translateY(${(p - 0.5) * 30}%)`
       }
 
       // Phase transitions
@@ -138,17 +131,15 @@ export default function SchoolsSection() {
     <section ref={sectionRef} className="schools-section">
       <div className="schools-sticky">
 
-        {/* Scrubbed background video */}
-        <video
-          ref={videoRef}
-          className="schools-video"
-          src={`${BASE}schools/schools-bg.mp4`}
-          muted
-          playsInline
-          preload="auto"
-          aria-hidden="true"
-          onLoadedMetadata={e => { try { e.target.pause(); e.target.currentTime = 0 } catch (_) {} }}
-        />
+        {/* Parallax background image */}
+        <div className="schools-parallax-wrap" aria-hidden="true">
+          <img
+            ref={bgRef}
+            className="schools-parallax-img"
+            src={`${BASE}schools/schools-bg.jpg`}
+            alt=""
+          />
+        </div>
         <div className="schools-video-overlay" />
 
         {/* Phase 1: title */}
