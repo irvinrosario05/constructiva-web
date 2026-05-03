@@ -1,9 +1,12 @@
 import { useState, useEffect, useRef } from 'react'
 
+const BASE = import.meta.env.BASE_URL
+
 const SCHOOLS_DATA = [
   {
     id: 'bim',
     title: 'Escuela BIM',
+    image: `${BASE}schools/school-bim.jpg`,
     gradient: 'linear-gradient(145deg, #0D2B2A, #1A4A47)',
     description: 'Domina la metodología BIM y aprende de expertos las herramientas que están transformando la forma de construir.',
     courses: [
@@ -15,6 +18,7 @@ const SCHOOLS_DATA = [
   {
     id: 'direction',
     title: 'Escuela de Dirección de Proyectos',
+    image: `${BASE}schools/school-direction.jpg`,
     gradient: 'linear-gradient(145deg, #1A1A2E, #2D2D4A)',
     description: 'Recorre el camino de ingeniero o arquitecto a Director de Proyectos.',
     courses: [
@@ -26,6 +30,7 @@ const SCHOOLS_DATA = [
   {
     id: 'digital',
     title: 'Escuela de Transformación Digital',
+    image: `${BASE}schools/school-digital.jpg`,
     gradient: 'linear-gradient(145deg, #0A1628, #1A2D4A)',
     description: 'Únete a la revolución digital en la construcción y lidera el cambio de paradigma con la inteligencia artificial.',
     courses: [
@@ -37,6 +42,7 @@ const SCHOOLS_DATA = [
   {
     id: 'management',
     title: 'Escuela de Gestión de Obras',
+    image: `${BASE}schools/school-management.jpg`,
     gradient: 'linear-gradient(145deg, #1C1208, #3D2A10)',
     description: 'Aprende cómo se construye y se lidera en el campo — desde la planificación hasta la ejecución de cada proyecto.',
     courses: [
@@ -48,9 +54,10 @@ const SCHOOLS_DATA = [
 ]
 
 export default function SchoolsSection() {
-  const sectionRef = useRef(null)
-  const phaseRef = useRef(0)
-  const [phase, setPhase] = useState(0)
+  const sectionRef  = useRef(null)
+  const videoRef    = useRef(null)
+  const phaseRef    = useRef(0)
+  const [phase, setPhase]       = useState(0)
   const [hoveredId, setHoveredId] = useState(null)
 
   // 0 = not visible, 1 = title, 2 = cards entering, 3 = hover active
@@ -61,8 +68,8 @@ export default function SchoolsSection() {
 
     const tick = () => {
       if (stopped) return
-      const rect = section.getBoundingClientRect()
-      const vh = window.innerHeight
+      const rect  = section.getBoundingClientRect()
+      const vh    = window.innerHeight
       const total = section.offsetHeight - vh
 
       let p = 0
@@ -72,6 +79,19 @@ export default function SchoolsSection() {
         p = 1
       }
 
+      // Scrub background video
+      const video = videoRef.current
+      if (video && video.readyState >= 1) {
+        const dur = video.duration && !isNaN(video.duration) ? video.duration : 0
+        if (dur > 0) {
+          const target = Math.max(0, Math.min(dur, p * dur))
+          if (Math.abs(video.currentTime - target) > 0.08) {
+            try { video.currentTime = target } catch (_) {}
+          }
+        }
+      }
+
+      // Phase transitions
       let next
       if (rect.top > vh * 0.95) next = 0
       else if (p < 0.4) next = 1
@@ -90,7 +110,7 @@ export default function SchoolsSection() {
   }, [])
 
   const cardsVisible = phase >= 2
-  const hoverActive = phase >= 2
+  const hoverActive  = phase >= 2
 
   const titleStyle = {
     opacity: phase === 1 ? 1 : 0,
@@ -109,10 +129,26 @@ export default function SchoolsSection() {
   return (
     <section ref={sectionRef} className="schools-section">
       <div className="schools-sticky">
+
+        {/* Scrubbed background video */}
+        <video
+          ref={videoRef}
+          className="schools-video"
+          src={`${BASE}schools/schools-bg.mp4`}
+          muted
+          playsInline
+          preload="auto"
+          aria-hidden="true"
+          onLoadedMetadata={e => { try { e.target.pause(); e.target.currentTime = 0 } catch (_) {} }}
+        />
+        <div className="schools-video-overlay" />
+
+        {/* Phase 1: title */}
         <div className="schools-title-wrap" style={titleStyle}>
           <h2 className="schools-title">Descubre las Escuelas dentro de Constructiva</h2>
         </div>
 
+        {/* Phase 2+: cards */}
         <div
           className="schools-cards"
           onMouseLeave={() => setHoveredId(null)}
@@ -120,7 +156,7 @@ export default function SchoolsSection() {
         >
           {SCHOOLS_DATA.map((school, i) => {
             const isHovered = hoveredId === school.id
-            const isDimmed = hoveredId !== null && !isHovered
+            const isDimmed  = hoveredId !== null && !isHovered
             return (
               <div
                 key={school.id}
@@ -128,7 +164,14 @@ export default function SchoolsSection() {
                 style={{ transitionDelay: phase === 2 ? `${i * 80}ms` : '0ms' }}
                 onMouseEnter={() => hoverActive && setHoveredId(school.id)}
               >
-                <div className="school-card-bg" style={{ background: school.gradient }} />
+                <div
+                  className="school-card-bg"
+                  style={{
+                    backgroundImage: school.image
+                      ? `url(${school.image})`
+                      : school.gradient,
+                  }}
+                />
                 <div className="school-card-overlay" />
                 <div className="school-card-title-default">{school.title}</div>
                 <div className="school-card-expanded">
