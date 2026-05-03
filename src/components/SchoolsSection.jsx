@@ -6,6 +6,8 @@ const SCHOOLS_DATA = [
   {
     id: 'bim',
     title: 'Escuela BIM',
+    titlePrefix: 'Escuela',
+    titleName: 'BIM',
     image: `${BASE}schools/school-bim.jpg`,
     gradient: 'linear-gradient(145deg, #0D2B2A, #1A4A47)',
     description: 'Domina la metodología BIM y aprende de expertos las herramientas que están transformando la forma de construir.',
@@ -18,6 +20,8 @@ const SCHOOLS_DATA = [
   {
     id: 'direction',
     title: 'Escuela de Dirección de Proyectos',
+    titlePrefix: 'Escuela de',
+    titleName: 'Dirección de Proyectos',
     image: `${BASE}schools/school-direction.jpg`,
     gradient: 'linear-gradient(145deg, #1A1A2E, #2D2D4A)',
     description: 'Recorre el camino de ingeniero o arquitecto a Director de Proyectos.',
@@ -30,6 +34,8 @@ const SCHOOLS_DATA = [
   {
     id: 'digital',
     title: 'Escuela de Transformación Digital',
+    titlePrefix: 'Escuela de',
+    titleName: 'Transformación Digital',
     image: `${BASE}schools/school-digital.jpg`,
     gradient: 'linear-gradient(145deg, #0A1628, #1A2D4A)',
     description: 'Únete a la revolución digital en la construcción y lidera el cambio de paradigma con la inteligencia artificial.',
@@ -42,6 +48,8 @@ const SCHOOLS_DATA = [
   {
     id: 'management',
     title: 'Escuela de Gestión de Obras',
+    titlePrefix: 'Escuela de',
+    titleName: 'Gestión de Obras',
     image: `${BASE}schools/school-management.jpg`,
     gradient: 'linear-gradient(145deg, #1C1208, #3D2A10)',
     description: 'Aprende cómo se construye y se lidera en el campo — desde la planificación hasta la ejecución de cada proyecto.',
@@ -173,7 +181,10 @@ export default function SchoolsSection() {
                   }}
                 />
                 <div className="school-card-overlay" />
-                <div className="school-card-title-default">{school.title}</div>
+                <div className="school-card-title-default">
+                  <span className="card-title-prefix">{school.titlePrefix}</span>
+                  <span className="card-title-name">{school.titleName}</span>
+                </div>
                 <div className="school-card-expanded">
                   <h3 className="school-card-title-expanded">{school.title}</h3>
                   <div className="school-card-deco-line" />

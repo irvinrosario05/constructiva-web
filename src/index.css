@@ -405,24 +405,39 @@ body { overflow-x: hidden; }
   background-size: cover; background-position: center;
   transition: filter 600ms var(--ease-cinema);
 }
-.school-card.is-hovered .school-card-bg { filter: brightness(0.85); }
+.school-card.is-hovered .school-card-bg { filter: brightness(0.25) saturate(0.6); }
 .school-card.is-dimmed .school-card-bg { filter: brightness(0.3) blur(1px); }
 .school-card-overlay {
   position: absolute; inset: 0; z-index: 2; pointer-events: none;
   background: linear-gradient(to top, rgba(10,10,10,0.85) 0%, rgba(10,10,10,0.3) 50%, rgba(10,10,10,0.08) 100%);
-  transition: opacity 600ms var(--ease-cinema);
+  transition: background 600ms var(--ease-cinema), opacity 600ms var(--ease-cinema);
 }
-.school-card.is-dimmed .school-card-overlay { opacity: 2; }
+.school-card.is-hovered .school-card-overlay {
+  background: linear-gradient(to top, rgba(5,5,5,0.97) 0%, rgba(5,5,5,0.88) 60%, rgba(5,5,5,0.75) 100%);
+}
+.school-card.is-dimmed .school-card-overlay { opacity: 1; }
 .school-card-divider {
   position: absolute; top: 0; right: 0; width: 1px; height: 100%;
   background: rgba(255,255,255,0.06); z-index: 6; pointer-events: none;
 }
 .school-card-title-default {
   position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
-  z-index: 3; color: #FFFFFF; font-size: clamp(14px, 1.3vw, 20px); font-weight: 500;
-  letter-spacing: -0.01em; line-height: 1.3; text-align: center;
-  padding: 0 12px; width: 100%; pointer-events: none;
+  z-index: 3; text-align: center;
+  padding: 0 16px; width: 100%; pointer-events: none;
   transition: opacity 400ms var(--ease-cinema);
+}
+.card-title-prefix {
+  display: block;
+  font-size: clamp(9px, 0.85vw, 11px); font-weight: 700;
+  letter-spacing: 0.14em; text-transform: uppercase;
+  color: rgba(255,255,255,0.5); margin-bottom: 8px;
+}
+.card-title-name {
+  display: block;
+  font-family: var(--font-sans);
+  font-size: clamp(20px, 1.9vw, 28px); font-weight: 700;
+  letter-spacing: -0.025em; line-height: 1.1;
+  color: #FFFFFF; max-width: 200px; margin: 0 auto;
 }
 .school-card.is-hovered .school-card-title-default { opacity: 0; }
 .school-card.is-dimmed .school-card-title-default { opacity: 0.35; }
