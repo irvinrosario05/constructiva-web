@@ -20,7 +20,7 @@ const DROPDOWNS = {
   },
 }
 
-export default function NavBar({ topOffset }) {
+export default function NavBar({ topOffset, onLogin, onEmpresas, onCalendar, onHome }) {
   const [scrolled, setScrolled] = useState(false)
   const [hoverIdx, setHoverIdx] = useState(null)
   const [openLabel, setOpenLabel] = useState(null)
@@ -50,7 +50,7 @@ export default function NavBar({ topOffset }) {
       <div className="navbar-outer" style={{ top: topOffset }}>
         <nav className={`navbar-pill ${scrolled ? 'is-scrolled' : ''}`}>
           <div className="navbar-inner">
-            <a href="#" className="logo" aria-label="Constructiva — inicio">
+            <a href="#" className="logo" aria-label="Constructiva — inicio" onClick={onHome ? (e) => { e.preventDefault(); onHome() } : undefined}>
               {!logoBroken ? (
                 <img
                   src={`${import.meta.env.BASE_URL}logos/Logo_aqua.png`}
@@ -77,8 +77,14 @@ export default function NavBar({ topOffset }) {
                     onMouseLeave={() => { setHoverIdx(null); if (dd) scheduleClose() }}
                   >
                     <a
-                      href={`#${label.toLowerCase()}`}
+                      href={label === 'Empresas' || label === 'Calendario' ? undefined : `#${label.toLowerCase()}`}
+                      onClick={
+                        label === 'Empresas'   ? (e) => { e.preventDefault(); onEmpresas?.() }  :
+                        label === 'Calendario' ? (e) => { e.preventDefault(); onCalendar?.() }  :
+                        undefined
+                      }
                       className={`nav-link ${hoverIdx === i ? 'is-hover' : ''}`}
+                      style={{ cursor: 'pointer' }}
                     >
                       {label}
                       {dd && (
@@ -114,7 +120,7 @@ export default function NavBar({ topOffset }) {
               })}
             </div>
 
-            <button type="button" className="login-btn">Iniciar sesión</button>
+            <button type="button" className="login-btn" onClick={onLogin}>Iniciar sesión</button>
 
             <button
               onClick={() => setMobileOpen(true)}
@@ -140,7 +146,12 @@ export default function NavBar({ topOffset }) {
               <a
                 key={label}
                 href="#"
-                onClick={() => setMobileOpen(false)}
+                onClick={() => {
+                  setMobileOpen(false)
+                  if (label === 'Iniciar sesión') onLogin?.()
+                  if (label === 'Empresas')   onEmpresas?.()
+                  if (label === 'Calendario') onCalendar?.()
+                }}
                 style={{ animationDelay: `${i * 50}ms` }}
               >
                 {label}

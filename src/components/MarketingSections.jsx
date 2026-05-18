@@ -1,4 +1,6 @@
-import { useState, useEffect, useRef, useMemo } from 'react'
+import { useState, useEffect, useRef, useMemo, useCallback } from 'react'
+
+const BASE = import.meta.env.BASE_URL
 import MethodologySection from './MethodologySection'
 
 /* ── Intersection-based in-view (fires once) ── */
@@ -130,10 +132,11 @@ function CountUp({ target, start, duration = 400 }) {
    SECTION 4 — PROFESORES
    ════════════════════════════════════════════ */
 const TEACHERS = [
-  { name: 'Ing. Carlos Méndez',  role: 'Director de Proyectos, 15 años exp.',  spec: 'BIM · Revit · Gestión',        photoBg: 'linear-gradient(145deg, #1F1F1F, #2E2E2E)', initial: 'CM' },
-  { name: 'Arq. María Santos',   role: 'Especialista en Diseño Sostenible',    spec: 'Renders · IA · Diseño',        photoBg: 'linear-gradient(145deg, #1A2628, #2A3D40)', initial: 'MS' },
-  { name: 'Ing. Roberto Acosta', role: 'Gerente de Construcción',              spec: 'Presupuestos · Lean · Obras',  photoBg: 'linear-gradient(145deg, #261A1A, #3D2A2A)', initial: 'RA' },
-  { name: 'Arq. Laura Guzmán',   role: 'Consultora en Transformación Digital', spec: 'IA · Automatización · BIM',    photoBg: 'linear-gradient(145deg, #1F1A26, #2D2840)', initial: 'LG' },
+  { name: 'Prof. César Caldas',       role: 'Neurociencias · Speaker',                    spec: 'Neurociencias · Liderazgo · Innovación',  photo: `${BASE}teachers/OP_13992 Background Removed.png` },
+  { name: 'Ing. Genesis de la Cruz',  role: 'Co-CEO Quanto · Founder Construcción C.099', spec: 'Gestión · Tecnología · Innovación',        photo: `${BASE}teachers/OP_14007 Background Removed.png` },
+  { name: 'Arq. Iván Matías',         role: 'Autodesk Expert Elite',                      spec: 'Revit · AutoCAD · BIM',                   photo: `${BASE}teachers/OP_17180 Background Removed.png` },
+  { name: 'Ing. Nathalie Viñas',      role: 'Planificación de Proyectos',                 spec: 'Scheduling · Ms Project · PMI',           photo: `${BASE}teachers/OP_17635 Background Removed.png` },
+  { name: 'Ing. Irvin Rosario',       role: 'CEO Constructiva',                           spec: 'Estrategia · BIM · Liderazgo',            photo: `${BASE}teachers/OP_17648 Background Removed.png` },
 ]
 
 function TypewriterWord({ word, start, speed = 70 }) {
@@ -153,8 +156,21 @@ function TypewriterWord({ word, start, speed = 70 }) {
 function TeachersSection() {
   const [sectionEnterRef, entered] = useSectionEnter()
   const [headRef, headIn] = useInView(0.35)
-  const [gridRef, gridIn] = useInView(0.1)
   const parallaxRef = useParallaxY(0.28, 120)
+  const n = TEACHERS.length
+  const [active, setActive] = useState(0)
+  const timerRef = useRef(null)
+
+  const resetTimer = useCallback((nextIdx) => {
+    clearInterval(timerRef.current)
+    setActive(nextIdx)
+    timerRef.current = setInterval(() => setActive(i => (i + 1) % n), 3000)
+  }, [n])
+
+  useEffect(() => {
+    timerRef.current = setInterval(() => setActive(i => (i + 1) % n), 3000)
+    return () => clearInterval(timerRef.current)
+  }, [n])
 
   const setHeadAndParallax = (node) => {
     headRef.current = node
@@ -174,26 +190,45 @@ function TeachersSection() {
             <span className="v2-teachers-h-italic"><TypewriterWord word="construyen" start={headIn} /></span>
           </h2>
         </div>
-        <div ref={gridRef} className="v2-teachers-grid">
-          {TEACHERS.map((t, i) => (
-            <div
-              key={t.name}
-              className={`v2-teacher ${gridIn ? 'is-in' : ''}`}
-              style={{ transitionDelay: `${i * 120}ms` }}
-            >
-              <div className="v2-teacher-photo-wrap">
-                <div className="v2-teacher-photo" style={{ background: t.photoBg }}>
-                  <span className="v2-teacher-initial">{t.initial}</span>
-                </div>
-                <div className="v2-teacher-overlay" />
-                <div className="v2-teacher-info">
-                  <div className="v2-teacher-name">{t.name}</div>
-                  <div className="v2-teacher-role">{t.role}</div>
-                  <div className="v2-teacher-spec">{t.spec}</div>
+
+        <div className="tc-stage">
+          {TEACHERS.map((t, i) => {
+            let pos = (i - active + n) % n
+            if (pos > Math.floor(n / 2)) pos -= n
+            const absPos = Math.abs(pos)
+            const scale   = absPos === 0 ? 1 : absPos === 1 ? 0.80 : 0.62
+            const opacity = absPos === 0 ? 1 : absPos === 1 ? 0.55 : 0.18
+            const tx      = pos * 320
+            return (
+              <div
+                key={t.name}
+                className={`tc-card${pos === 0 ? ' is-center' : ''}`}
+                style={{
+                  transform: `translateX(calc(-50% + ${tx}px)) scale(${scale})`,
+                  opacity,
+                  zIndex: 5 - absPos,
+                }}
+                onClick={() => resetTimer(i)}
+              >
+                <img src={t.photo} alt={t.name} className="tc-photo" />
+                <div className="tc-info">
+                  <div className="tc-name">{t.name}</div>
+                  <div className="tc-role">{t.role}</div>
+                  <div className="tc-spec">{t.spec}</div>
                 </div>
               </div>
-              <div className="v2-teacher-rule" />
-            </div>
+            )
+          })}
+        </div>
+
+        <div className="tc-dots">
+          {TEACHERS.map((_, i) => (
+            <button
+              key={i}
+              className={`tc-dot${i === active ? ' is-active' : ''}`}
+              onClick={() => resetTimer(i)}
+              aria-label={`Ver profesor ${i + 1}`}
+            />
           ))}
         </div>
       </div>
