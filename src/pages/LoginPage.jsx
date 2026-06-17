@@ -50,6 +50,20 @@ function EyeBtn({ show, toggle }) {
   )
 }
 
+function ErrorAlert({ msg }) {
+  if (!msg) return null
+  return (
+    <div className="login-error" role="alert">
+      <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true">
+        <circle cx="7" cy="7" r="6" stroke="currentColor" strokeWidth="1.2"/>
+        <path d="M7 4v3.5" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round"/>
+        <circle cx="7" cy="10" r="0.6" fill="currentColor"/>
+      </svg>
+      {msg}
+    </div>
+  )
+}
+
 export default function LoginPage({ onBack }) {
   const [view, setView] = useState('login')
 
@@ -105,7 +119,7 @@ export default function LoginPage({ onBack }) {
           <div className="login-logo-row">
             <a href="#" onClick={e => { e.preventDefault(); onBack() }} className="login-logo" aria-label="Constructiva — inicio">
               <img
-                src={`${BASE}logos/Logo_blanco.png`}
+                src={`${BASE}logos/Logo_aqua.png`}
                 alt="Constructiva"
                 className="logo-img"
                 onError={e => { e.currentTarget.style.display = 'none'; e.currentTarget.nextSibling.style.display = 'inline' }}
@@ -145,16 +159,7 @@ export default function LoginPage({ onBack }) {
                   </div>
                 </div>
 
-                {error && (
-                  <div className="login-error" role="alert">
-                    <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true">
-                      <circle cx="7" cy="7" r="6" stroke="currentColor" strokeWidth="1.2"/>
-                      <path d="M7 4v3.5" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round"/>
-                      <circle cx="7" cy="10" r="0.6" fill="currentColor"/>
-                    </svg>
-                    {error}
-                  </div>
-                )}
+                <ErrorAlert msg={error} />
 
                 <button type="submit" className="login-submit" disabled={loading}>
                   {loading ? <span className="login-spinner" aria-hidden="true" /> : 'Iniciar Sesión'}
@@ -223,16 +228,7 @@ export default function LoginPage({ onBack }) {
                   </div>
                 </div>
 
-                {regError && (
-                  <div className="login-error" role="alert">
-                    <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true">
-                      <circle cx="7" cy="7" r="6" stroke="currentColor" strokeWidth="1.2"/>
-                      <path d="M7 4v3.5" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round"/>
-                      <circle cx="7" cy="10" r="0.6" fill="currentColor"/>
-                    </svg>
-                    {regError}
-                  </div>
-                )}
+                <ErrorAlert msg={regError} />
 
                 <button type="submit" className="login-submit" disabled={regLoading}>
                   {regLoading ? <span className="login-spinner" aria-hidden="true" /> : 'Crear cuenta'}

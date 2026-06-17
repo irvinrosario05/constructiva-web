@@ -1,67 +1,8 @@
 import { useState, useEffect, useRef } from 'react'
 import ParticleCanvas from './ParticleCanvas'
+import { SCHOOLS_DATA, PRODUCTS_BY_SCHOOL } from '../data/schools'
 
 const BASE = import.meta.env.BASE_URL
-
-const SCHOOLS_DATA = [
-  {
-    id: 'bim',
-    productKey: 'bim',
-    title: 'Escuela BIM',
-    titlePrefix: 'Escuela',
-    titleName: 'BIM',
-    image: `${BASE}schools/school-bim.jpg`,
-    gradient: 'linear-gradient(145deg, #0D2B2A, #1A4A47)',
-    description: 'Domina la metodología BIM y aprende de expertos las herramientas que están transformando la forma de construir.',
-  },
-  {
-    id: 'direction',
-    productKey: 'direccion',
-    title: 'Escuela de Dirección de Proyectos',
-    titlePrefix: 'Escuela de',
-    titleName: 'Dirección de Proyectos',
-    image: `${BASE}schools/school-direction.jpg`,
-    gradient: 'linear-gradient(145deg, #1A1A2E, #2D2D4A)',
-    description: 'Recorre el camino de ingeniero o arquitecto a Director de Proyectos.',
-  },
-  {
-    id: 'digital',
-    productKey: 'digital',
-    title: 'Escuela de Transformación Digital',
-    titlePrefix: 'Escuela de',
-    titleName: 'Transformación Digital',
-    image: `${BASE}schools/school-digital.jpg`,
-    gradient: 'linear-gradient(145deg, #0A1628, #1A2D4A)',
-    description: 'Únete a la revolución digital en la construcción y lidera el cambio de paradigma con la inteligencia artificial.',
-  },
-  {
-    id: 'management',
-    productKey: 'gestion',
-    title: 'Escuela de Gestión de Obras',
-    titlePrefix: 'Escuela de',
-    titleName: 'Gestión de Obras',
-    image: `${BASE}schools/school-management.jpg`,
-    gradient: 'linear-gradient(145deg, #1C1208, #3D2A10)',
-    description: 'Aprende cómo se construye y se lidera en el campo — desde la planificación hasta la ejecución de cada proyecto.',
-  },
-]
-
-// ─── PRODUCT DATA ─────────────────────────────────────────────────────────────
-const PRODUCTS_BY_SCHOOL = {
-  bim: [
-    { id: 'revit-arq',          type: 'curso',       title: 'Revit Arquitectura',                        duration: '24 h', level: 'Intermedio', modality: 'Grabado',  price: 'RD$ 4.500', image: `${BASE}courses/course-revit-arq.jpg` },
-    { id: 'revit-est',          type: 'curso',       title: 'Revit Estructuras',                         duration: '20 h', level: 'Avanzado',   modality: 'Grabado',  price: 'RD$ 4.500', image: `${BASE}courses/course-revit-est.jpg` },
-  ],
-  direccion: [
-    { id: 'masterclass-ia-dp',  type: 'masterclass', title: 'IA en dirección de proyectos',              duration: '2 h',  level: 'Inicial',    modality: 'En vivo',  price: 'Gratis',     image: `${BASE}courses/mc-ia-dir.jpg` },
-    { id: 'masterclass-ing-pm', type: 'masterclass', title: 'De ingeniero/arquitecto a Project Manager', duration: '2 h',  level: 'Inicial',    modality: 'En vivo',  price: 'Gratis',     image: `${BASE}courses/mc-ia-dp.jpg` },
-    { id: 'curso-dp',           type: 'curso',       title: 'Dirección de proyectos de construcción',    duration: '40 h', level: 'Intermedio', modality: 'Híbrido',  price: 'RD$ 7.500', image: `${BASE}courses/course-excel-ia.jpg` },
-  ],
-  digital: [
-    { id: 'excel-ia',           type: 'curso',       title: 'Excel + IA para ingenieros',                duration: '12 h', level: 'Intermedio', modality: 'Grabado',  price: 'RD$ 3.200', image: `${BASE}courses/mc-ing-pm.jpg` },
-  ],
-  gestion: [],
-}
 
 // ─── PRODUCT CARD ──────────────────────────────────────────────────────────────
 function ProductCard({ product, index }) {
@@ -164,7 +105,7 @@ function ProductCarousel({ products }) {
   )
 }
 
-export default function SchoolsSection() {
+export default function SchoolsSection({ onViewCourses }) {
   const sectionRef   = useRef(null)
   const progressRef  = useRef(0)
   const phaseRef     = useRef(0)
@@ -309,7 +250,11 @@ export default function SchoolsSection() {
                     <p className="school-card-desc spc-desc-clamp">{school.description}</p>
                   </div>
                   <ProductCarousel products={schoolProducts} />
-                  <a href="#" className="school-card-cta-link">
+                  <a
+                    href="#"
+                    className="school-card-cta-link"
+                    onClick={e => { e.preventDefault(); onViewCourses?.(school.id) }}
+                  >
                     {schoolProducts.length > 0 ? 'Ver todos los cursos' : 'Suscribirme a novedades'}
                     <span className="school-card-cta-arrow">→</span>
                   </a>

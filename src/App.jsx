@@ -8,11 +8,15 @@ import MarketingSections from './components/MarketingSections'
 import LoginPage from './pages/LoginPage'
 import EmpresasPage from './pages/EmpresasPage'
 import CalendarPage from './pages/CalendarPage'
+import CoursesPage from './pages/CoursesPage'
+import CourseDetailPage from './pages/CourseDetailPage'
 
 export default function App() {
   const [announcementOpen, setAnnouncementOpen] = useState(true)
   const [collapsed, setCollapsed] = useState(false)
   const [page, setPage] = useState('home')
+  const [coursesSchoolId, setCoursesSchoolId] = useState(null)
+  const [courseDetailData, setCourseDetailData] = useState(null)
   const sectionRef = useRef(null)
   const lenisRef = useRef(null)
 
@@ -21,24 +25,19 @@ export default function App() {
     setTimeout(() => setCollapsed(true), 220)
   }
 
-  const goToLogin = () => {
+  const goToLogin = () => { window.scrollTo(0, 0); setPage('login') }
+  const goToEmpresas = () => { window.scrollTo(0, 0); setPage('empresas') }
+  const goHome = () => { window.scrollTo(0, 0); setPage('home') }
+  const goToCalendar = () => { window.scrollTo(0, 0); setPage('calendar') }
+  const goToCourses = (schoolId = null) => {
     window.scrollTo(0, 0)
-    setPage('login')
+    setCoursesSchoolId(schoolId)
+    setPage('courses')
   }
-
-  const goToEmpresas = () => {
+  const goToCourseDetail = (course, school) => {
     window.scrollTo(0, 0)
-    setPage('empresas')
-  }
-
-  const goHome = () => {
-    window.scrollTo(0, 0)
-    setPage('home')
-  }
-
-  const goToCalendar = () => {
-    window.scrollTo(0, 0)
-    setPage('calendar')
+    setCourseDetailData({ course, school })
+    setPage('course-detail')
   }
 
   useEffect(() => {
@@ -66,17 +65,19 @@ export default function App() {
   if (page === 'login')    return <LoginPage    onBack={goHome} />
   if (page === 'empresas') return <EmpresasPage onBack={goHome} />
   if (page === 'calendar') return <CalendarPage onBack={goHome} onLogin={goToLogin} onEmpresas={goToEmpresas} />
+  if (page === 'courses')  return <CoursesPage  onBack={goHome} initialSchoolId={coursesSchoolId} onGoToDetail={goToCourseDetail} />
+  if (page === 'course-detail' && courseDetailData) return <CourseDetailPage course={courseDetailData.course} school={courseDetailData.school} onBack={() => setPage('courses')} onGoToDetail={goToCourseDetail} />
 
   const topOffset = announcementOpen && !collapsed ? 'calc(38px + 16px)' : '16px'
 
   return (
     <div className="page">
       <AnnouncementBar open={announcementOpen} onClose={handleClose} />
-      <NavBar topOffset={topOffset} onLogin={goToLogin} onEmpresas={goToEmpresas} onCalendar={goToCalendar} onHome={goHome} />
+      <NavBar topOffset={topOffset} onLogin={goToLogin} onEmpresas={goToEmpresas} onCalendar={goToCalendar} onHome={goHome} onCourses={goToCourses} />
       <section ref={sectionRef} className="hero-section" style={{ height: '400vh' }}>
         <HeroSection sectionRef={sectionRef} />
       </section>
-      <SchoolsSection />
+      <SchoolsSection onViewCourses={goToCourses} />
       <MarketingSections />
     </div>
   )

@@ -3,12 +3,12 @@ import { useState, useEffect, useRef } from 'react'
 const DROPDOWNS = {
   Cursos: {
     items: [
-      { label: 'Dirección de Proyectos', href: '#cursos/direccion' },
-      { label: 'Inteligencia Artificial', href: '#cursos/ia' },
-      { label: 'Transformación Digital', href: '#cursos/transformacion' },
-      { label: 'Gestión de Obras', href: '#cursos/gestion' },
+      { label: 'BIM',                      schoolId: 'bim' },
+      { label: 'Dirección de Proyectos',   schoolId: 'direction' },
+      { label: 'Transformación Digital',   schoolId: 'digital' },
+      { label: 'Gestión de Obras',         schoolId: 'management' },
       { type: 'separator' },
-      { label: 'Ver todos los cursos', href: '#cursos', cta: true },
+      { label: 'Ver todos los cursos',     schoolId: null, cta: true },
     ],
   },
   Comunidad: {
@@ -20,7 +20,7 @@ const DROPDOWNS = {
   },
 }
 
-export default function NavBar({ topOffset, onLogin, onEmpresas, onCalendar, onHome }) {
+export default function NavBar({ topOffset, onLogin, onEmpresas, onCalendar, onHome, onCourses }) {
   const [scrolled, setScrolled] = useState(false)
   const [hoverIdx, setHoverIdx] = useState(null)
   const [openLabel, setOpenLabel] = useState(null)
@@ -77,10 +77,11 @@ export default function NavBar({ topOffset, onLogin, onEmpresas, onCalendar, onH
                     onMouseLeave={() => { setHoverIdx(null); if (dd) scheduleClose() }}
                   >
                     <a
-                      href={label === 'Empresas' || label === 'Calendario' ? undefined : `#${label.toLowerCase()}`}
+                      href={undefined}
                       onClick={
                         label === 'Empresas'   ? (e) => { e.preventDefault(); onEmpresas?.() }  :
                         label === 'Calendario' ? (e) => { e.preventDefault(); onCalendar?.() }  :
+                        label === 'Cursos'     ? (e) => { e.preventDefault(); onCourses?.() }   :
                         undefined
                       }
                       className={`nav-link ${hoverIdx === i ? 'is-hover' : ''}`}
@@ -104,9 +105,10 @@ export default function NavBar({ topOffset, onLogin, onEmpresas, onCalendar, onH
                             ) : (
                               <a
                                 key={it.label}
-                                href={it.href}
+                                href="#"
                                 role="menuitem"
                                 className={`nav-dropdown-item ${it.cta ? 'is-cta' : ''}`}
+                                onClick={e => { e.preventDefault(); setOpenLabel(null); onCourses?.(it.schoolId) }}
                               >
                                 <span>{it.label}</span>
                               </a>
