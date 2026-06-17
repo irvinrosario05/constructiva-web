@@ -1,20 +1,9 @@
 import { useState, useEffect, useRef } from 'react'
 
 const DROPDOWNS = {
-  Cursos: {
-    items: [
-      { label: 'BIM',                      schoolId: 'bim' },
-      { label: 'Dirección de Proyectos',   schoolId: 'direction' },
-      { label: 'Transformación Digital',   schoolId: 'digital' },
-      { label: 'Gestión de Obras',         schoolId: 'management' },
-      { type: 'separator' },
-      { label: 'Ver todos los cursos',     schoolId: null, cta: true },
-    ],
-  },
   Comunidad: {
     items: [
-      { label: 'Foro', href: '#comunidad/foro' },
-      { label: 'WhatsApp', href: '#comunidad/whatsapp' },
+      { label: 'WhatsApp',   href: '#comunidad/whatsapp' },
       { label: 'Newsletter', href: '#comunidad/newsletter' },
     ],
   },
@@ -43,7 +32,7 @@ export default function NavBar({ topOffset, onLogin, onEmpresas, onCalendar, onH
     closeTimerRef.current = setTimeout(() => setOpenLabel(null), 120)
   }
 
-  const links = ['Cursos', 'Calendario', 'Empresas', 'Comunidad']
+  const links = ['Masterclass', 'Empresas', 'Comunidad']
 
   return (
     <>
@@ -79,9 +68,7 @@ export default function NavBar({ topOffset, onLogin, onEmpresas, onCalendar, onH
                     <a
                       href={undefined}
                       onClick={
-                        label === 'Empresas'   ? (e) => { e.preventDefault(); onEmpresas?.() }  :
-                        label === 'Calendario' ? (e) => { e.preventDefault(); onCalendar?.() }  :
-                        label === 'Cursos'     ? (e) => { e.preventDefault(); onCourses?.() }   :
+                        label === 'Empresas' ? (e) => { e.preventDefault(); onEmpresas?.() } :
                         undefined
                       }
                       className={`nav-link ${hoverIdx === i ? 'is-hover' : ''}`}
@@ -151,8 +138,7 @@ export default function NavBar({ topOffset, onLogin, onEmpresas, onCalendar, onH
                 onClick={() => {
                   setMobileOpen(false)
                   if (label === 'Iniciar sesión') onLogin?.()
-                  if (label === 'Empresas')   onEmpresas?.()
-                  if (label === 'Calendario') onCalendar?.()
+                  if (label === 'Empresas') onEmpresas?.()
                 }}
                 style={{ animationDelay: `${i * 50}ms` }}
               >
