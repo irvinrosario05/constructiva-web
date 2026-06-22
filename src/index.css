@@ -1,15 +1,3 @@
-@import "tailwindcss";
-
-@theme {
-  --color-aqua: #36DBCA;
-  --color-aqua-hover: #2BC9B8;
-  --color-teal: #248D84;
-  --color-ink-900: #0A0A0A;
-  --color-surface: #0d1b1e;
-  --color-card: #0d1f22;
-  --font-sans: "SF Pro Display", ui-sans-serif, system-ui, sans-serif;
-}
-
 /* ── Fonts ── */
 @font-face { font-family:"SF Pro Display"; src:url("../public/fonts/SFProDisplay-Regular.otf") format("opentype"); font-weight:400; font-style:normal; font-display:swap; }
 @font-face { font-family:"SF Pro Display"; src:url("../public/fonts/SFProDisplay-Medium.otf") format("opentype"); font-weight:500; font-style:normal; font-display:swap; }
