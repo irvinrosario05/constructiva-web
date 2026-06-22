@@ -68,7 +68,7 @@ export default function App() {
   if (page === 'courses')  return <CoursesPage  onBack={goHome} initialSchoolId={coursesSchoolId} onGoToDetail={goToCourseDetail} />
   if (page === 'course-detail' && courseDetailData) return <CourseDetailPage course={courseDetailData.course} school={courseDetailData.school} onBack={() => setPage('courses')} onGoToDetail={goToCourseDetail} />
 
-  const topOffset = announcementOpen && !collapsed ? 'calc(38px + 16px)' : '16px'
+  const topOffset = announcementOpen && !collapsed ? 'calc(52px + 16px)' : '16px'
 
   return (
     <div className="page">

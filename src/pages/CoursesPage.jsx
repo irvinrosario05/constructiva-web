@@ -168,6 +168,15 @@ function StageCarousel({ products, school, onCardClick, onGoToDetail }) {
               <div className="crs-stage-card-info">
                 <span className={`crs-badge crs-badge--${course.type}`}>{course.type}</span>
                 <h3 className="crs-stage-card-title">{course.title}</h3>
+                {course.teacher && (
+                  <p className="crs-stage-card-teacher">
+                    <svg width="11" height="11" viewBox="0 0 12 12" fill="none" aria-hidden="true" style={{display:'inline',verticalAlign:'middle',marginRight:4,opacity:0.6}}>
+                      <circle cx="6" cy="4" r="2.5" stroke="currentColor" strokeWidth="1.2"/>
+                      <path d="M1.5 10.5c0-2.485 2.015-4 4.5-4s4.5 1.515 4.5 4" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round"/>
+                    </svg>
+                    {course.teacher}
+                  </p>
+                )}
                 <div className="crs-stage-card-meta">
                   <span><IconClock />{course.duration}</span>
                   <span className="crs-meta-dot" />

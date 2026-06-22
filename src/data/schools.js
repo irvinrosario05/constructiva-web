@@ -64,6 +64,7 @@ export const PRODUCTS_BY_SCHOOL = {
       price: 'RD$ 4.500',
       priceNum: 4500,
       image: `${BASE}courses/course-revit-arq.jpg`,
+      teacher: 'Arq. Iván Matías',
     },
     {
       id: 'revit-est',
@@ -76,6 +77,7 @@ export const PRODUCTS_BY_SCHOOL = {
       price: 'RD$ 4.500',
       priceNum: 4500,
       image: `${BASE}courses/course-revit-est.jpg`,
+      teacher: 'Arq. Iván Matías',
     },
   ],
   direccion: [
@@ -90,6 +92,7 @@ export const PRODUCTS_BY_SCHOOL = {
       price: 'Gratis',
       priceNum: 0,
       image: `${BASE}courses/mc-ia-dir.jpg`,
+      teacher: 'Víctor Corniel',
     },
     {
       id: 'masterclass-ing-pm',
@@ -102,6 +105,7 @@ export const PRODUCTS_BY_SCHOOL = {
       price: 'Gratis',
       priceNum: 0,
       image: `${BASE}courses/mc-ia-dp.jpg`,
+      teacher: 'Ing. Nathalie Viñas',
     },
     {
       id: 'curso-dp',
@@ -114,6 +118,7 @@ export const PRODUCTS_BY_SCHOOL = {
       price: 'RD$ 7.500',
       priceNum: 7500,
       image: `${BASE}courses/course-excel-ia.jpg`,
+      teacher: 'Ing. Nathalie Viñas',
     },
   ],
   digital: [
@@ -128,6 +133,7 @@ export const PRODUCTS_BY_SCHOOL = {
       price: 'RD$ 3.200',
       priceNum: 3200,
       image: `${BASE}courses/mc-ing-pm.jpg`,
+      teacher: 'Víctor Corniel',
     },
   ],
   gestion: [
@@ -142,6 +148,7 @@ export const PRODUCTS_BY_SCHOOL = {
       price: 'RD$ 3.800',
       priceNum: 3800,
       image: `${BASE}courses/course-revit-est.jpg`,
+      teacher: 'Ing. Nathalie Viñas',
     },
     {
       id: 'control-obra',
@@ -154,6 +161,7 @@ export const PRODUCTS_BY_SCHOOL = {
       price: 'RD$ 4.200',
       priceNum: 4200,
       image: `${BASE}courses/course-revit-arq.jpg`,
+      teacher: 'Ing. Genesis de la Cruz',
     },
     {
       id: 'masterclass-obra',
@@ -166,6 +174,7 @@ export const PRODUCTS_BY_SCHOOL = {
       price: 'Gratis',
       priceNum: 0,
       image: `${BASE}courses/mc-ia-dir.jpg`,
+      teacher: 'Ing. Genesis de la Cruz',
     },
   ],
 }
